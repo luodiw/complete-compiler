@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["ast_stitch"],"struct":["ModElement","Module","TopLevelExpression"]};

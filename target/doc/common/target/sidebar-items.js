@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["AArch64TargetConfigurator","AMDGPUTargetConfigurator","ARMTargetConfigurator","BPFTargetConfigurator","GeneralTargetConfigurator","MIPSTargetConfigurator","PPCTargetConfigurator","RVTargetConfigurator","SparcTargetConfigurator","SystemZTargetConfigurator","WasmTargetConfigurator","X86TargetConfigurator"],"trait":["TargetConfigurator"]};

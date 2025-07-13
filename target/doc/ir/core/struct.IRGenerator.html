@@ -1,0 +1,493 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="A struct for generating LLVM Intermediate Representation (IR) from a module of abstract syntax trees (AST) and symbol table stacks (STS)."><title>IRGenerator in ir::core - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-916cea96.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="ir" data-themes="" data-resource-suffix="" data-rustdoc-version="1.87.0 (17067e9ac 2025-05-09)" data-channel="1.87.0" data-search-js="search-e7298875.js" data-settings-js="settings-d72f25bb.js" ><script src="../../static.files/storage-82c7156e.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-fb8c74a8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc struct"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../ir/index.html">ir</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">IRGenerator</a></h2><h3><a href="#implementations">Methods</a></h3><ul class="block method"><li><a href="#method.add_tag_to_store_table" title="add_tag_to_store_table">add_tag_to_store_table</a></li><li><a href="#method.decrement_stack_pointer" title="decrement_stack_pointer">decrement_stack_pointer</a></li><li><a href="#method.delete_store_table" title="delete_store_table">delete_store_table</a></li><li><a href="#method.generate_assignment_ir" title="generate_assignment_ir">generate_assignment_ir</a></li><li><a href="#method.generate_block_exp" title="generate_block_exp">generate_block_exp</a></li><li><a href="#method.generate_break_ir" title="generate_break_ir">generate_break_ir</a></li><li><a href="#method.generate_continue_ir" title="generate_continue_ir">generate_continue_ir</a></li><li><a href="#method.generate_data_type_ir" title="generate_data_type_ir">generate_data_type_ir</a></li><li><a href="#method.generate_do_while_ir" title="generate_do_while_ir">generate_do_while_ir</a></li><li><a href="#method.generate_fn_declaration_ir" title="generate_fn_declaration_ir">generate_fn_declaration_ir</a></li><li><a href="#method.generate_for_ir" title="generate_for_ir">generate_for_ir</a></li><li><a href="#method.generate_if_ir" title="generate_if_ir">generate_if_ir</a></li><li><a href="#method.generate_initialization_ir" title="generate_initialization_ir">generate_initialization_ir</a></li><li><a href="#method.generate_ir" title="generate_ir">generate_ir</a></li><li><a href="#method.generate_literal_ir" title="generate_literal_ir">generate_literal_ir</a></li><li><a href="#method.generate_return_ir" title="generate_return_ir">generate_return_ir</a></li><li><a href="#method.generate_variable_ir" title="generate_variable_ir">generate_variable_ir</a></li><li><a href="#method.generate_while_ir" title="generate_while_ir">generate_while_ir</a></li><li><a href="#method.get_break_continue_target" title="get_break_continue_target">get_break_continue_target</a></li><li><a href="#method.get_builder" title="get_builder">get_builder</a></li><li><a href="#method.get_context" title="get_context">get_context</a></li><li><a href="#method.get_current_block" title="get_current_block">get_current_block</a></li><li><a href="#method.get_current_insert_block" title="get_current_insert_block">get_current_insert_block</a></li><li><a href="#method.get_function" title="get_function">get_function</a></li><li><a href="#method.get_module" title="get_module">get_module</a></li><li><a href="#method.get_next_label_id" title="get_next_label_id">get_next_label_id</a></li><li><a href="#method.get_resource_pools" title="get_resource_pools">get_resource_pools</a></li><li><a href="#method.get_stack" title="get_stack">get_stack</a></li><li><a href="#method.get_stack_pointer" title="get_stack_pointer">get_stack_pointer</a></li><li><a href="#method.increment_stack_pointer" title="increment_stack_pointer">increment_stack_pointer</a></li><li><a href="#method.ir_router" title="ir_router">ir_router</a></li><li><a href="#method.make_new_store_table" title="make_new_store_table">make_new_store_table</a></li><li><a href="#method.new" title="new">new</a></li><li><a href="#method.pop_target" title="pop_target">pop_target</a></li><li><a href="#method.push_break_continue_target" title="push_break_continue_target">push_break_continue_target</a></li><li><a href="#method.push_break_target" title="push_break_target">push_break_target</a></li><li><a href="#method.reset_stack_pointer" title="reset_stack_pointer">reset_stack_pointer</a></li><li><a href="#method.search_store_table" title="search_store_table">search_store_table</a></li><li><a href="#method.set_current_insert_block" title="set_current_insert_block">set_current_insert_block</a></li><li><a href="#method.set_function" title="set_function">set_function</a></li><li><a href="#method.set_stack" title="set_stack">set_stack</a></li></ul><h3><a href="#synthetic-implementations">Auto Trait Implementations</a></h3><ul class="block synthetic-implementation"><li><a href="#impl-Send-for-IRGenerator" title="!Send">!Send</a></li><li><a href="#impl-Sync-for-IRGenerator" title="!Sync">!Sync</a></li><li><a href="#impl-Freeze-for-IRGenerator" title="Freeze">Freeze</a></li><li><a href="#impl-RefUnwindSafe-for-IRGenerator" title="RefUnwindSafe">RefUnwindSafe</a></li><li><a href="#impl-Unpin-for-IRGenerator" title="Unpin">Unpin</a></li><li><a href="#impl-UnwindSafe-for-IRGenerator" title="UnwindSafe">UnwindSafe</a></li></ul><h3><a href="#blanket-implementations">Blanket Implementations</a></h3><ul class="block blanket-implementation"><li><a href="#impl-Any-for-T" title="Any">Any</a></li><li><a href="#impl-Borrow%3CT%3E-for-T" title="Borrow&#60;T&#62;">Borrow&#60;T&#62;</a></li><li><a href="#impl-BorrowMut%3CT%3E-for-T" title="BorrowMut&#60;T&#62;">BorrowMut&#60;T&#62;</a></li><li><a href="#impl-From%3CT%3E-for-T" title="From&#60;T&#62;">From&#60;T&#62;</a></li><li><a href="#impl-Into%3CU%3E-for-T" title="Into&#60;U&#62;">Into&#60;U&#62;</a></li><li><a href="#impl-TryFrom%3CU%3E-for-T" title="TryFrom&#60;U&#62;">TryFrom&#60;U&#62;</a></li><li><a href="#impl-TryInto%3CU%3E-for-T" title="TryInto&#60;U&#62;">TryInto&#60;U&#62;</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="index.html">In ir::<wbr>core</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">ir</a>::<wbr><a href="index.html">core</a></div><h1>Struct <span class="struct">IRGenerator</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/ir/core.rs.html#22-45">Source</a> </span></div><pre class="rust item-decl"><code>pub struct IRGenerator { <span class="comment">/* private fields */</span> }</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>A struct for generating LLVM Intermediate Representation (IR) from a module of abstract syntax trees (AST) and symbol table stacks (STS).</p>
+</div></details><h2 id="implementations" class="section-header">Implementations<a href="#implementations" class="anchor">§</a></h2><div id="implementations-list"><details class="toggle implementors-toggle" open><summary><section id="impl-IRGenerator" class="impl"><a class="src rightside" href="../../src/ir/core.rs.html#55-597">Source</a><a href="#impl-IRGenerator" class="anchor">§</a><h3 class="code-header">impl <a class="struct" href="struct.IRGenerator.html" title="struct ir::core::IRGenerator">IRGenerator</a></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.new" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#92-115">Source</a><h4 class="code-header">pub fn <a href="#method.new" class="fn">new</a>() -&gt; Self</h4></section></summary><div class="docblock"><p>Creates a new <code>IRGenerator</code> instance.</p>
+<p>This initializer sets up an <code>IRGenerator</code> instance, setting up its own context, module, and builder
+which are necessary components of writing IR. The most important to understand is the builder,
+which performs the function of writing IR into the module you are creating.</p>
+<p>The current function is not initialized yet, and is set to None. This will change when you
+generate a function. Once you do so, you must set this so that you can know where to write IR into
+for each function. Remember, main() is a function!</p>
+<p>sts is not set yet, and is None. Additionally, the sts stack pointer is set to 0. Set the STS
+when you have one and make sure to increment and decrement the stack pointer as you generate IR
+to stay in step with the STS.</p>
+<p>current_target_stack is initialized as an empty stack. In C, in a while loop for example, break;
+will end the loop entirely upon reaching that statement, and continue; will jump back to checking
+the loop conditions. The targets for break and continue are stored here, so you know where to point to
+when you hit one of these.</p>
+<p>current_label_id starts at 0 and is the suffix for labels in IR. Jumping to labels is how we do complex
+logic like loops, and all labels have to be unique (otherwise how would we know which label was which?)
+so this along with its supporting functions allow unique IDs to be created for every label.</p>
+<p>store is initialized to a new store. The store is a space for managing variables, allowing you
+to assign and reassign variables in IR while keeping track of their tags.</p>
+<p>current_insert_block is set to None, this is a space to hold the “basic block” (labeled area of code)
+that new blocks should be inserted after. ResourcePools contains a function that can create basic blocks
+after a given basic block, and this helps support that. This will be necessary for inserting code blocks
+in the body of a while loop for example.</p>
+<h5 id="returns"><a class="doc-anchor" href="#returns">§</a>Returns</h5>
+<p>Returns a new <code>IRGenerator</code> instance ready to generate a module from an AST and STS generated in
+previous steps.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.get_resource_pools" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#118-120">Source</a><h4 class="code-header">pub fn <a href="#method.get_resource_pools" class="fn">get_resource_pools</a>(&amp;mut self) -&gt; <a class="struct" href="https://doc.rust-lang.org/1.87.0/alloc/sync/struct.Arc.html" title="struct alloc::sync::Arc">Arc</a>&lt;<a class="struct" href="https://doc.rust-lang.org/1.87.0/std/sync/poison/mutex/struct.Mutex.html" title="struct std::sync::poison::mutex::Mutex">Mutex</a>&lt;IRManager&gt;&gt;</h4></section></summary><div class="docblock"><p>Returns a protected reference to the resource pools.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.get_context" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#130-132">Source</a><h4 class="code-header">pub fn <a href="#method.get_context" class="fn">get_context</a>(&amp;self) -&gt; ContextTag</h4></section></summary><div class="docblock"><p>Gets the current IR generation’s context, so that a single
+module of IR generation occurs within the same scope.</p>
+<h5 id="returns-1"><a class="doc-anchor" href="#returns-1">§</a>Returns</h5>
+<p>Returns the current context’s tag for use in other IR generation functions
+that make use of it.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.get_module" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#141-143">Source</a><h4 class="code-header">pub fn <a href="#method.get_module" class="fn">get_module</a>(&amp;self) -&gt; ModuleTag</h4></section></summary><div class="docblock"><p>Returns the current module being generated.</p>
+<h5 id="returns-2"><a class="doc-anchor" href="#returns-2">§</a>Returns</h5>
+<p>Returns the current module’s tag for use in getting the completed module
+after IR has been generated.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.get_builder" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#151-153">Source</a><h4 class="code-header">pub fn <a href="#method.get_builder" class="fn">get_builder</a>(&amp;self) -&gt; BuilderTag</h4></section></summary><div class="docblock"><p>Returns the builder used for constructing IR statements.</p>
+<h5 id="returns-3"><a class="doc-anchor" href="#returns-3">§</a>Returns</h5>
+<p>Returns this IRGenerator’s builder’s tag for use with functions that require the builder.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.get_function" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#163-165">Source</a><h4 class="code-header">pub fn <a href="#method.get_function" class="fn">get_function</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;ValueTag&gt;</h4></section></summary><div class="docblock"><p>Retrieves the current function being built.</p>
+<h5 id="returns-4"><a class="doc-anchor" href="#returns-4">§</a>Returns</h5>
+<p>Returns the tag of the function currently being built for use
+with functions that need this information, could be None if called
+before initialized.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.set_function" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#173-175">Source</a><h4 class="code-header">pub fn <a href="#method.set_function" class="fn">set_function</a>(&amp;mut self, function: ValueTag)</h4></section></summary><div class="docblock"><p>Sets the current function being built.</p>
+<h5 id="parameters"><a class="doc-anchor" href="#parameters">§</a>Parameters</h5>
+<ul>
+<li><code>function</code>: The ValueTag of the new function to be set as the current function</li>
+</ul>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.get_current_insert_block" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#185-187">Source</a><h4 class="code-header">pub fn <a href="#method.get_current_insert_block" class="fn">get_current_insert_block</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;BasicBlockTag&gt;</h4></section></summary><div class="docblock"><p>Retrieves the current block to insert after</p>
+<h5 id="returns-5"><a class="doc-anchor" href="#returns-5">§</a>Returns</h5>
+<p>Returns the tag of the basic block which is set as the block to insert
+after currently. Could be None if this is called when no basic block
+is currently set.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.set_current_insert_block" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#195-197">Source</a><h4 class="code-header">pub fn <a href="#method.set_current_insert_block" class="fn">set_current_insert_block</a>(&amp;mut self, to_set: BasicBlockTag)</h4></section></summary><div class="docblock"><p>Sets the current block to insert after</p>
+<h5 id="parameters-1"><a class="doc-anchor" href="#parameters-1">§</a>Parameters</h5>
+<ul>
+<li><code>to_set</code>: The BasicBlockTag of the new baic block to be set as the insert block</li>
+</ul>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.get_break_continue_target" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#207-231">Source</a><h4 class="code-header">pub fn <a href="#method.get_break_continue_target" class="fn">get_break_continue_target</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/1.87.0/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;BasicBlockTag&gt;&gt;</h4></section></summary><div class="docblock"><p>Retrieves the current break and potentially the current continue target</p>
+<h5 id="returns-6"><a class="doc-anchor" href="#returns-6">§</a>Returns</h5>
+<p>Returns a vector of basic block tags where index 0 is the break target and index 1
+is the continue target (if one exists, otherwise the vector will only have index 0).
+This may return None if an error occurred getting the targets from the target stack.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.push_break_continue_target" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#240-246">Source</a><h4 class="code-header">pub fn <a href="#method.push_break_continue_target" class="fn">push_break_continue_target</a>(
+    &amp;mut self,
+    break_block_tag: BasicBlockTag,
+    continue_block_tag: BasicBlockTag,
+)</h4></section></summary><div class="docblock"><p>Pushes a tag for break; and a tag for continue; on the target stack.</p>
+<h5 id="parameters-2"><a class="doc-anchor" href="#parameters-2">§</a>Parameters</h5>
+<ul>
+<li><code>break_block_tag</code>: The BasicBlockTag of the tag to branch to when break; is encountered.</li>
+<li><code>continue_block_tag</code>: The BasicBlockTag of the tag to branch to when continue; is encountered.</li>
+</ul>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.push_break_target" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#254-260">Source</a><h4 class="code-header">pub fn <a href="#method.push_break_target" class="fn">push_break_target</a>(&amp;mut self, break_block_tag: BasicBlockTag)</h4></section></summary><div class="docblock"><p>Pushes only a tag for break; on the target stack.</p>
+<h5 id="parameters-3"><a class="doc-anchor" href="#parameters-3">§</a>Parameters</h5>
+<ul>
+<li><code>break_block_tag</code>: The BasicBlockTag of the tag to branch to when break; is encountered.</li>
+</ul>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.pop_target" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#265-271">Source</a><h4 class="code-header">pub fn <a href="#method.pop_target" class="fn">pop_target</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Pops current break continue target off the stack</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.get_next_label_id" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#294-298">Source</a><h4 class="code-header">pub fn <a href="#method.get_next_label_id" class="fn">get_next_label_id</a>(&amp;mut self) -&gt; <a class="struct" href="https://doc.rust-lang.org/1.87.0/alloc/string/struct.String.html" title="struct alloc::string::String">String</a></h4></section></summary><div class="docblock"><p>Gets and increments the next ID number as a string for differentiating labels</p>
+<h5 id="returns-7"><a class="doc-anchor" href="#returns-7">§</a>Returns</h5>
+<p>Returns a string representing a unique ID number, advancing the current number
+that produced it by 1 so the next time this function is called it also returns a
+unique ID number.</p>
+<h5 id="examples"><a class="doc-anchor" href="#examples">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">/* IR is generated in different sections using labels, and labels must be unique so the code goes to
+the right places. This allows you to use a system like */
+//let label: String = "some_label_nameID".to_string();
+//let next_id: String = self.get_next_label_id();
+//let new_label_name = label + &amp;next_id;
+/* to create a new unique label name stored in new_label_name. For example if the next ID 
+was 42 then this label would be some_label_nameID42, and if a new label needed to be generated
+in this part of IR then it would do the same thing and be named some_label_nameID43, ensuring
+all label names are unique. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.make_new_store_table" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#311-313">Source</a><h4 class="code-header">pub fn <a href="#method.make_new_store_table" class="fn">make_new_store_table</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Makes a new current table in the store</p>
+<h5 id="examples-1"><a class="doc-anchor" href="#examples-1">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">/* When we enter a new scope, we need to create a new table in the store
+to correctly generate IR such that variables only exist in their
+current scope and inner scopes. When we do get into a new scope, use*/
+//self.make_new_store_table();
+/* to create a new table for this scope. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.delete_store_table" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#328-330">Source</a><h4 class="code-header">pub fn <a href="#method.delete_store_table" class="fn">delete_store_table</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Deletes the current table in the store</p>
+<h5 id="examples-2"><a class="doc-anchor" href="#examples-2">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">/* When we leave a scope, we need to delete the current tab;e in the store
+to correctly generate IR such that variables only exist in their
+current scope and inner scopes, and when we return to an outer scope the 
+variables in the current scope no longer exist. When we do get out of a
+current scope, use*/
+//self.delete_store_table();
+/* to delete the current table for this scope. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.search_store_table" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#350-357">Source</a><h4 class="code-header">pub fn <a href="#method.search_store_table" class="fn">search_store_table</a>(&amp;self, name: <a class="struct" href="https://doc.rust-lang.org/1.87.0/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>) -&gt; ValueTag</h4></section></summary><div class="docblock"><p>Searches the store table for a variable with a name</p>
+<h5 id="parameters-4"><a class="doc-anchor" href="#parameters-4">§</a>Parameters</h5>
+<ul>
+<li><code>name</code>: A <code>String</code> name of a variable to get an allocation tag for.</li>
+</ul>
+<h5 id="returns-8"><a class="doc-anchor" href="#returns-8">§</a>Returns</h5>
+<p>Returns the allocation tag of the variable associated with the given string variable name.</p>
+<h5 id="examples-3"><a class="doc-anchor" href="#examples-3">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">/* To retrieve a variable's value first you must get its allocation tag, use */
+//let var_name: String = /* some variable name that exists in the current scope or an outer scope */
+//let alloca_tag = self.search_store_table(var_name);
+/* to do this. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.add_tag_to_store_table" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#378-380">Source</a><h4 class="code-header">pub fn <a href="#method.add_tag_to_store_table" class="fn">add_tag_to_store_table</a>(&amp;mut self, name: <a class="struct" href="https://doc.rust-lang.org/1.87.0/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>, tag: ValueTag)</h4></section></summary><div class="docblock"><p>adds an allocation tag to the current store table</p>
+<h5 id="parameters-5"><a class="doc-anchor" href="#parameters-5">§</a>Parameters</h5>
+<ul>
+<li><code>name</code>: A <code>String</code> name of a variable to set an allocation tag for.</li>
+<li><code>tag</code>: A <code>ValueTag</code> allocation tag of the variable to store in the table</li>
+</ul>
+<h5 id="examples-4"><a class="doc-anchor" href="#examples-4">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">/* When we create a new variable, it creates an allocation tag pointing that variable
+that we must keep track of if we want to use that variable or reassign it in the future.
+To do this, we associate variable names with tags in the store so we can retrieve
+these allocation tags later. Use */
+//let var_name: String = /* some variable name that we want to create*/
+//let alloca_tag = /* allocation tag of the variable we've created with IR generation */
+//self.add_tag_to_store_table(var_name, alloca_tag);
+/* to do this. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.get_current_block" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#396-400">Source</a><h4 class="code-header">pub fn <a href="#method.get_current_block" class="fn">get_current_block</a>(&amp;mut self) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;BasicBlockTag&gt;</h4></section></summary><div class="docblock"><p>Retrieves the current basic block the builder is pointing into.</p>
+<h5 id="returns-9"><a class="doc-anchor" href="#returns-9">§</a>Returns</h5>
+<p>Returns the BasicBlockTag of the current basic block that the builder is working in.
+May be None if called before builder is positioned.</p>
+<h5 id="examples-5"><a class="doc-anchor" href="#examples-5">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">/* Inside the IR generation loop it may be necessary to get the tag of the current block for use in
+other functions. Use*/
+//let current_bb_tag = self.get_current_block();
+/* to do this. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.increment_stack_pointer" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#412-414">Source</a><h4 class="code-header">pub fn <a href="#method.increment_stack_pointer" class="fn">increment_stack_pointer</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Increments the stack pointer.</p>
+<h5 id="examples-6"><a class="doc-anchor" href="#examples-6">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">/* It will be necessary to increment the stack pointer when we need to move
+ to a new scope. Use*/
+//self.increment_stack_pointer();
+/* to do this. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.decrement_stack_pointer" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#426-428">Source</a><h4 class="code-header">pub fn <a href="#method.decrement_stack_pointer" class="fn">decrement_stack_pointer</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Decrements the stack pointer.</p>
+<h5 id="examples-7"><a class="doc-anchor" href="#examples-7">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">/* It will be necessary to decrement the stack pointer when we need to move back
+ to a previous scope. Use*/
+//self.decrement_stack_pointer();
+/* to do this. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.reset_stack_pointer" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#440-442">Source</a><h4 class="code-header">pub fn <a href="#method.reset_stack_pointer" class="fn">reset_stack_pointer</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Resets the stack pointer to zero.</p>
+<h5 id="examples-8"><a class="doc-anchor" href="#examples-8">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">/* Sometimes it could be necessary to reset the stack pointer to 0 if we need to move
+ to a new STS. Use*/
+//self.reset_stack_pointer();
+/* to do this. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.get_stack" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#459-461">Source</a><h4 class="code-header">pub fn <a href="#method.get_stack" class="fn">get_stack</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../../sts/core/struct.SymbolTableStack.html" title="struct sts::core::SymbolTableStack">SymbolTableStack</a>&gt;</h4></section></summary><div class="docblock"><p>Retrieves a clone of the current symbol table stack.</p>
+<h5 id="returns-10"><a class="doc-anchor" href="#returns-10">§</a>Returns</h5>
+<p>Returns a clone of the current symbol table stack (may be None if called before
+the STS is initialized).</p>
+<h5 id="examples-9"><a class="doc-anchor" href="#examples-9">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">/* Inside the IR generation loop it may sometimes be necessary to retrieve
+the current STS. Use*/
+//let sts = self.get_stack();
+/* to do this. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.set_stack" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#475-477">Source</a><h4 class="code-header">pub fn <a href="#method.set_stack" class="fn">set_stack</a>(&amp;mut self, new_sts: <a class="struct" href="../../sts/core/struct.SymbolTableStack.html" title="struct sts::core::SymbolTableStack">SymbolTableStack</a>)</h4></section></summary><div class="docblock"><p>Sets the current symbol table stack to a new STS.</p>
+<h5 id="parameters-6"><a class="doc-anchor" href="#parameters-6">§</a>Parameters</h5>
+<ul>
+<li><code>new_sts</code>: <code>The new SymbolTableStack</code> to be set as the STS for this IRGenerator.</li>
+</ul>
+<h5 id="examples-10"><a class="doc-anchor" href="#examples-10">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">/* with new_stack as some STS that is desired to be the current STS */
+//self.set_stack(new_stack);</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.get_stack_pointer" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#493-495">Source</a><h4 class="code-header">pub fn <a href="#method.get_stack_pointer" class="fn">get_stack_pointer</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.87.0/std/primitive.usize.html">usize</a></h4></section></summary><div class="docblock"><p>Retrieves the current position of the stack pointer within the symbol table stack.</p>
+<h5 id="returns-11"><a class="doc-anchor" href="#returns-11">§</a>Returns</h5>
+<p>Returns a <code>usize</code> representing the current stack pointer.</p>
+<h5 id="examples-11"><a class="doc-anchor" href="#examples-11">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">/* when we need to access the STS, the way to find which stack to access is by 
+using */
+//let stack_pointer = self.get_stack_pointer();
+/* to find the current value of the stack pointer, and access the STS with stack_pointer. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.generate_ir" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#508-522">Source</a><h4 class="code-header">pub fn <a href="#method.generate_ir" class="fn">generate_ir</a>(&amp;mut self, input: <a class="struct" href="../../integration/module/struct.Module.html" title="struct integration::module::Module">Module</a>) -&gt; ModuleTag</h4></section></summary><div class="docblock"><p>Generates LLVM IR from a given module by processing its AST.
+This method iterates over the module’s elements, generating IR for each and managing the state transitions required.</p>
+<h5 id="parameters-7"><a class="doc-anchor" href="#parameters-7">§</a>Parameters</h5>
+<ul>
+<li><code>input</code>: A <code>Module</code> Containing an AST and an STS.</li>
+</ul>
+<h5 id="returns-12"><a class="doc-anchor" href="#returns-12">§</a>Returns</h5>
+<p>Returns a <code>ModuleTag</code> containing the constructed module when IR generation is complete.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.ir_router" class="method"><a class="src rightside" href="../../src/ir/core.rs.html#539-596">Source</a><h4 class="code-header">pub fn <a href="#method.ir_router" class="fn">ir_router</a>(&amp;mut self, node: &amp;<a class="struct" href="../../common/ast/core/struct.ASTNode.html" title="struct common::ast::core::ASTNode">ASTNode</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Routes the generation of LLVM IR based on the type of AST node encountered.</p>
+<h5 id="parameters-8"><a class="doc-anchor" href="#parameters-8">§</a>Parameters</h5>
+<ul>
+<li><code>node</code>: A reference to an <code>ASTNode</code> to generate IR for.</li>
+</ul>
+<h5 id="returns-13"><a class="doc-anchor" href="#returns-13">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing the tag of the data created by IR generation
+(may be None) or an error if there was a problem during IR generation.</p>
+<h5 id="errors"><a class="doc-anchor" href="#errors">§</a>Errors</h5>
+<ul>
+<li>Returns an error if there was a problem during IR generation such as a malformed node.</li>
+</ul>
+</div></details></div></details><details class="toggle implementors-toggle" open><summary><section id="impl-IRGenerator-1" class="impl"><a class="src rightside" href="../../src/ir/block.rs.html#13-538">Source</a><a href="#impl-IRGenerator-1" class="anchor">§</a><h3 class="code-header">impl <a class="struct" href="struct.IRGenerator.html" title="struct ir::core::IRGenerator">IRGenerator</a></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.generate_fn_declaration_ir" class="method"><a class="src rightside" href="../../src/ir/block.rs.html#37-104">Source</a><h4 class="code-header">pub fn <a href="#method.generate_fn_declaration_ir" class="fn">generate_fn_declaration_ir</a>(
+    &amp;mut self,
+    node: &amp;<a class="struct" href="../../common/ast/core/struct.ASTNode.html" title="struct common::ast::core::ASTNode">ASTNode</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Generates LLVM IR for a function declaration.</p>
+<h5 id="parameters-9"><a class="doc-anchor" href="#parameters-9">§</a>Parameters</h5>
+<ul>
+<li><code>node</code>: A reference to an <code>ASTNode</code> to generate IR for a function declaration.</li>
+</ul>
+<h5 id="returns-14"><a class="doc-anchor" href="#returns-14">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing the Tag of this function
+if generation went smoothly or an Error if there was a problem generating the function.</p>
+<h5 id="errors-1"><a class="doc-anchor" href="#errors-1">§</a>Errors</h5>
+<ul>
+<li>Returns an ErrorType if generation failed.</li>
+</ul>
+<h5 id="examples-12"><a class="doc-anchor" href="#examples-12">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">//let a_node: ASTNode = /* Some ASTNode we want to generate a function declaration from */
+//let result = self.generate_fn_declaration_ir(&amp;a_node);
+/* check if type_result was Ok or Err, if Ok, it will contain the Tag that houses the 
+function's ValueTag. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.generate_block_exp" class="method"><a class="src rightside" href="../../src/ir/block.rs.html#128-136">Source</a><h4 class="code-header">pub fn <a href="#method.generate_block_exp" class="fn">generate_block_exp</a>(
+    &amp;mut self,
+    node: &amp;<a class="struct" href="../../common/ast/core/struct.ASTNode.html" title="struct common::ast::core::ASTNode">ASTNode</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Generates LLVM IR for a block expression.</p>
+<h5 id="parameters-10"><a class="doc-anchor" href="#parameters-10">§</a>Parameters</h5>
+<ul>
+<li><code>node</code>: A reference to an <code>ASTNode</code> to generate IR for a block expression.</li>
+</ul>
+<h5 id="returns-15"><a class="doc-anchor" href="#returns-15">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing None
+if generation went smoothly or an Error if there was a problem generating the block expression.</p>
+<h5 id="errors-2"><a class="doc-anchor" href="#errors-2">§</a>Errors</h5>
+<ul>
+<li>Returns an ErrorType if generation failed.</li>
+</ul>
+<h5 id="examples-13"><a class="doc-anchor" href="#examples-13">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">//let a_node: ASTNode = /* Some ASTNode we want to generate a block expression from */
+//let result = self.generate_block_exp(&amp;a_node);
+/* check if type_result was Ok or Err, if Ok, it will contain None. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.generate_do_while_ir" class="method"><a class="src rightside" href="../../src/ir/block.rs.html#160-224">Source</a><h4 class="code-header">pub fn <a href="#method.generate_do_while_ir" class="fn">generate_do_while_ir</a>(
+    &amp;mut self,
+    node: &amp;<a class="struct" href="../../common/ast/core/struct.ASTNode.html" title="struct common::ast::core::ASTNode">ASTNode</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Generates LLVM IR for a do while loop.</p>
+<h5 id="parameters-11"><a class="doc-anchor" href="#parameters-11">§</a>Parameters</h5>
+<ul>
+<li><code>node</code>: A reference to an <code>ASTNode</code> to generate IR for a do while loop.</li>
+</ul>
+<h5 id="returns-16"><a class="doc-anchor" href="#returns-16">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing None
+if generation went smoothly or an Error if there was a problem generating the do while.</p>
+<h5 id="errors-3"><a class="doc-anchor" href="#errors-3">§</a>Errors</h5>
+<ul>
+<li>Returns an ErrorType if generation failed.</li>
+</ul>
+<h5 id="examples-14"><a class="doc-anchor" href="#examples-14">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">//let a_node: ASTNode = /* Some ASTNode we want to generate a do while loop from */
+//let result = self.generate_do_while_ir(&amp;a_node);
+/* check if type_result was Ok or Err, if Ok, it will contain None. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.generate_while_ir" class="method"><a class="src rightside" href="../../src/ir/block.rs.html#248-312">Source</a><h4 class="code-header">pub fn <a href="#method.generate_while_ir" class="fn">generate_while_ir</a>(
+    &amp;mut self,
+    node: &amp;<a class="struct" href="../../common/ast/core/struct.ASTNode.html" title="struct common::ast::core::ASTNode">ASTNode</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Generates LLVM IR for a while loop.</p>
+<h5 id="parameters-12"><a class="doc-anchor" href="#parameters-12">§</a>Parameters</h5>
+<ul>
+<li><code>node</code>: A reference to an <code>ASTNode</code> to generate IR for a while loop.</li>
+</ul>
+<h5 id="returns-17"><a class="doc-anchor" href="#returns-17">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing None
+if generation went smoothly or an Error if there was a problem generating the while.</p>
+<h5 id="errors-4"><a class="doc-anchor" href="#errors-4">§</a>Errors</h5>
+<ul>
+<li>Returns an ErrorType if generation failed.</li>
+</ul>
+<h5 id="examples-15"><a class="doc-anchor" href="#examples-15">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">//let a_node: ASTNode = /* Some ASTNode we want to generate a while loop from */
+//let result = self.generate_while_ir(&amp;a_node);
+/* check if type_result was Ok or Err, if Ok, it will contain None. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.generate_for_ir" class="method"><a class="src rightside" href="../../src/ir/block.rs.html#336-422">Source</a><h4 class="code-header">pub fn <a href="#method.generate_for_ir" class="fn">generate_for_ir</a>(
+    &amp;mut self,
+    node: &amp;<a class="struct" href="../../common/ast/core/struct.ASTNode.html" title="struct common::ast::core::ASTNode">ASTNode</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Generates LLVM IR for a for loop.</p>
+<h5 id="parameters-13"><a class="doc-anchor" href="#parameters-13">§</a>Parameters</h5>
+<ul>
+<li><code>node</code>: A reference to an <code>ASTNode</code> to generate IR for a for loop.</li>
+</ul>
+<h5 id="returns-18"><a class="doc-anchor" href="#returns-18">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing None
+if generation went smoothly or an Error if there was a problem generating the for loop.</p>
+<h5 id="errors-5"><a class="doc-anchor" href="#errors-5">§</a>Errors</h5>
+<ul>
+<li>Returns an ErrorType if generation failed.</li>
+</ul>
+<h5 id="examples-16"><a class="doc-anchor" href="#examples-16">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">//let a_node: ASTNode = /* Some ASTNode we want to generate a for loop from */
+//let result = self.generate_for_ir(&amp;a_node);
+/* check if type_result was Ok or Err, if Ok, it will contain None. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.generate_if_ir" class="method"><a class="src rightside" href="../../src/ir/block.rs.html#446-537">Source</a><h4 class="code-header">pub fn <a href="#method.generate_if_ir" class="fn">generate_if_ir</a>(
+    &amp;mut self,
+    node: &amp;<a class="struct" href="../../common/ast/core/struct.ASTNode.html" title="struct common::ast::core::ASTNode">ASTNode</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Generates LLVM IR for an if statement.</p>
+<h5 id="parameters-14"><a class="doc-anchor" href="#parameters-14">§</a>Parameters</h5>
+<ul>
+<li><code>node</code>: A reference to an <code>ASTNode</code> to generate IR for an if statement.</li>
+</ul>
+<h5 id="returns-19"><a class="doc-anchor" href="#returns-19">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing None
+if generation went smoothly or an Error if there was a problem generating the if statement.</p>
+<h5 id="errors-6"><a class="doc-anchor" href="#errors-6">§</a>Errors</h5>
+<ul>
+<li>Returns an ErrorType if generation failed.</li>
+</ul>
+<h5 id="examples-17"><a class="doc-anchor" href="#examples-17">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">//let a_node: ASTNode = /* Some ASTNode we want to generate an if statement from */
+//let result = self.generate_for_ir(&amp;a_node);
+/* check if type_result was Ok or Err, if Ok, it will contain None. */</span></code></pre></div>
+</div></details></div></details><details class="toggle implementors-toggle" open><summary><section id="impl-IRGenerator-2" class="impl"><a class="src rightside" href="../../src/ir/statement.rs.html#11-307">Source</a><a href="#impl-IRGenerator-2" class="anchor">§</a><h3 class="code-header">impl <a class="struct" href="struct.IRGenerator.html" title="struct ir::core::IRGenerator">IRGenerator</a></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.generate_assignment_ir" class="method"><a class="src rightside" href="../../src/ir/statement.rs.html#34-76">Source</a><h4 class="code-header">pub fn <a href="#method.generate_assignment_ir" class="fn">generate_assignment_ir</a>(
+    &amp;mut self,
+    node: &amp;<a class="struct" href="../../common/ast/core/struct.ASTNode.html" title="struct common::ast::core::ASTNode">ASTNode</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Generates LLVM IR for an assignment</p>
+<h5 id="parameters-15"><a class="doc-anchor" href="#parameters-15">§</a>Parameters</h5>
+<ul>
+<li><code>node</code>: A reference to an <code>ASTNode</code> to generate IR for an assignment.</li>
+</ul>
+<h5 id="returns-20"><a class="doc-anchor" href="#returns-20">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing None if generation went smoothly or
+an Error if there was a problem generating the initialization.</p>
+<h5 id="errors-7"><a class="doc-anchor" href="#errors-7">§</a>Errors</h5>
+<ul>
+<li>Returns an ErrorType if generation of this assignment failed.</li>
+</ul>
+<h5 id="examples-18"><a class="doc-anchor" href="#examples-18">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">//let a_node: ASTNode = /* Some ASTNode we want to generate an assignment from */
+//let result = self.generate_assignment_ir(&amp;a_node);
+/* check if type_result was Ok or Err, if Ok, it will contain None. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.generate_initialization_ir" class="method"><a class="src rightside" href="../../src/ir/statement.rs.html#100-161">Source</a><h4 class="code-header">pub fn <a href="#method.generate_initialization_ir" class="fn">generate_initialization_ir</a>(
+    &amp;mut self,
+    node: &amp;<a class="struct" href="../../common/ast/core/struct.ASTNode.html" title="struct common::ast::core::ASTNode">ASTNode</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Generates LLVM IR for an initialization</p>
+<h5 id="parameters-16"><a class="doc-anchor" href="#parameters-16">§</a>Parameters</h5>
+<ul>
+<li><code>node</code>: A reference to an <code>ASTNode</code> to generate IR for an initialization.</li>
+</ul>
+<h5 id="returns-21"><a class="doc-anchor" href="#returns-21">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing None if generation went smoothly or
+an Error if there was a problem generating the initialization.</p>
+<h5 id="errors-8"><a class="doc-anchor" href="#errors-8">§</a>Errors</h5>
+<ul>
+<li>Returns an ErrorType if generation of this initialization failed.</li>
+</ul>
+<h5 id="examples-19"><a class="doc-anchor" href="#examples-19">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">//let a_node: ASTNode = /* Some ASTNode we want to generate an initialization from */
+//let result = self.generate_initialization_ir(&amp;a_node);
+/* check if type_result was Ok or Err, if Ok, it will contain None. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.generate_break_ir" class="method"><a class="src rightside" href="../../src/ir/statement.rs.html#186-188">Source</a><h4 class="code-header">pub fn <a href="#method.generate_break_ir" class="fn">generate_break_ir</a>(
+    &amp;mut self,
+    _node: &amp;<a class="struct" href="../../common/ast/core/struct.ASTNode.html" title="struct common::ast::core::ASTNode">ASTNode</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Generates LLVM IR for a break statement.</p>
+<h5 id="parameters-17"><a class="doc-anchor" href="#parameters-17">§</a>Parameters</h5>
+<ul>
+<li><code>node</code>: A reference to an <code>ASTNode</code> to generate IR for a break statement.</li>
+</ul>
+<h5 id="returns-22"><a class="doc-anchor" href="#returns-22">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing None if generation went smoothly or
+an Error if there was a problem generating the break.</p>
+<h5 id="errors-9"><a class="doc-anchor" href="#errors-9">§</a>Errors</h5>
+<ul>
+<li>Returns an ErrorType if generation of this break failed.</li>
+</ul>
+<h5 id="examples-20"><a class="doc-anchor" href="#examples-20">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">//let a_node: ASTNode = /* Some ASTNode we want to generate a break statement from */
+//let result = self.generate_break_ir(&amp;a_node);
+/* check if type_result was Ok or Err, if Ok, it will contain None. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.generate_continue_ir" class="method"><a class="src rightside" href="../../src/ir/statement.rs.html#212-214">Source</a><h4 class="code-header">pub fn <a href="#method.generate_continue_ir" class="fn">generate_continue_ir</a>(
+    &amp;mut self,
+    _node: &amp;<a class="struct" href="../../common/ast/core/struct.ASTNode.html" title="struct common::ast::core::ASTNode">ASTNode</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Generates LLVM IR for a continue statement.</p>
+<h5 id="parameters-18"><a class="doc-anchor" href="#parameters-18">§</a>Parameters</h5>
+<ul>
+<li><code>node</code>: A reference to an <code>ASTNode</code> to generate IR for a continue statement.</li>
+</ul>
+<h5 id="returns-23"><a class="doc-anchor" href="#returns-23">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing None if generation went smoothly or
+an Error if there was a problem generating the continue.</p>
+<h5 id="errors-10"><a class="doc-anchor" href="#errors-10">§</a>Errors</h5>
+<ul>
+<li>Returns an ErrorType if generation of this continue failed.</li>
+</ul>
+<h5 id="examples-21"><a class="doc-anchor" href="#examples-21">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">//let a_node: ASTNode = /* Some ASTNode we want to generate a continue statement from */
+//let result = self.generate_continue_ir(&amp;a_node);
+/* check if type_result was Ok or Err, if Ok, it will contain None. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.generate_return_ir" class="method"><a class="src rightside" href="../../src/ir/statement.rs.html#238-254">Source</a><h4 class="code-header">pub fn <a href="#method.generate_return_ir" class="fn">generate_return_ir</a>(
+    &amp;mut self,
+    node: &amp;<a class="struct" href="../../common/ast/core/struct.ASTNode.html" title="struct common::ast::core::ASTNode">ASTNode</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Generates LLVM IR for a return statement.</p>
+<h5 id="parameters-19"><a class="doc-anchor" href="#parameters-19">§</a>Parameters</h5>
+<ul>
+<li><code>node</code>: A reference to an <code>ASTNode</code> to generate IR for a return statement.</li>
+</ul>
+<h5 id="returns-24"><a class="doc-anchor" href="#returns-24">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing None if generation went smoothly or
+an Error if there was a problem generating the return.</p>
+<h5 id="errors-11"><a class="doc-anchor" href="#errors-11">§</a>Errors</h5>
+<ul>
+<li>Returns an ErrorType if generation of this return failed.</li>
+</ul>
+<h5 id="examples-22"><a class="doc-anchor" href="#examples-22">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">//let a_node: ASTNode = /* Some ASTNode we want to generate a return statement from */
+//let result = self.generate_return_ir(&amp;a_node);
+/* check if type_result was Ok or Err, if Ok, it will contain None. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.generate_variable_ir" class="method"><a class="src rightside" href="../../src/ir/statement.rs.html#279-306">Source</a><h4 class="code-header">pub fn <a href="#method.generate_variable_ir" class="fn">generate_variable_ir</a>(
+    &amp;mut self,
+    node: &amp;<a class="struct" href="../../common/ast/core/struct.ASTNode.html" title="struct common::ast::core::ASTNode">ASTNode</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Generates LLVM IR for recalling a variable</p>
+<h5 id="parameters-20"><a class="doc-anchor" href="#parameters-20">§</a>Parameters</h5>
+<ul>
+<li><code>node</code>: A reference to an <code>ASTNode</code> to generate IR for a variable recall statement.</li>
+</ul>
+<h5 id="returns-25"><a class="doc-anchor" href="#returns-25">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing the Tag of the recalled variable container
+if generation went smoothly or an Error if there was a problem in generation.</p>
+<h5 id="errors-12"><a class="doc-anchor" href="#errors-12">§</a>Errors</h5>
+<ul>
+<li>Returns an ErrorType if generation failed.</li>
+</ul>
+<h5 id="examples-23"><a class="doc-anchor" href="#examples-23">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">//let a_node: ASTNode = /* Some ASTNode we want to generate a recall statement from */
+//let result = self.generate_variable_ir(&amp;a_node);
+/* check if type_result was Ok or Err, if Ok, it will contain a Tag that houses
+the allocation tag of the recalled variable container. */</span></code></pre></div>
+</div></details></div></details><details class="toggle implementors-toggle" open><summary><section id="impl-IRGenerator-3" class="impl"><a class="src rightside" href="../../src/ir/primitive.rs.html#9-89">Source</a><a href="#impl-IRGenerator-3" class="anchor">§</a><h3 class="code-header">impl <a class="struct" href="struct.IRGenerator.html" title="struct ir::core::IRGenerator">IRGenerator</a></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.generate_data_type_ir" class="method"><a class="src rightside" href="../../src/ir/primitive.rs.html#34-37">Source</a><h4 class="code-header">pub fn <a href="#method.generate_data_type_ir" class="fn">generate_data_type_ir</a>(
+    &amp;mut self,
+    data_type: &amp;<a class="enum" href="../../common/ast/data_type/enum.DataType.html" title="enum common::ast::data_type::DataType">DataType</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Generates an LLVM type tag for a data type.</p>
+<h5 id="parameters-21"><a class="doc-anchor" href="#parameters-21">§</a>Parameters</h5>
+<ul>
+<li><code>data_type</code>: A reference to a <code>DataType</code> representing the type that should be created in the
+resource pools.</li>
+</ul>
+<h5 id="returns-26"><a class="doc-anchor" href="#returns-26">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing the constructed tag of the generated type
+if successful, or an <code>ErrorType</code> if there was an error generating this type tag.</p>
+<h5 id="errors-13"><a class="doc-anchor" href="#errors-13">§</a>Errors</h5>
+<ul>
+<li>Returns an ErrorType if generation of this type tag failed.</li>
+</ul>
+<h5 id="examples-24"><a class="doc-anchor" href="#examples-24">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">//let d_type: DataType = /* Some DataType we want a data type tag for */
+//let type_result = self.generate_data_type_ir(&amp;d_type);
+/* check if type_result was Ok or Err, if Ok extract the TypeTag from
+the Tag and use this for other functions. */</span></code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.generate_literal_ir" class="method"><a class="src rightside" href="../../src/ir/primitive.rs.html#62-88">Source</a><h4 class="code-header">pub fn <a href="#method.generate_literal_ir" class="fn">generate_literal_ir</a>(
+    &amp;mut self,
+    node: &amp;<a class="struct" href="../../common/ast/core/struct.ASTNode.html" title="struct common::ast::core::ASTNode">ASTNode</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="https://doc.rust-lang.org/1.87.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Tag&gt;, <a class="enum" href="../../common/error/enum.ErrorType.html" title="enum common::error::ErrorType">ErrorType</a>&gt;</h4></section></summary><div class="docblock"><p>Generates LLVM IR for a literal.</p>
+<h5 id="parameters-22"><a class="doc-anchor" href="#parameters-22">§</a>Parameters</h5>
+<ul>
+<li><code>node</code>: A reference to an <code>ASTNode</code> to generate IR for a literal value from.</li>
+</ul>
+<h5 id="returns-27"><a class="doc-anchor" href="#returns-27">§</a>Returns</h5>
+<p>Returns a <code>Result&lt;Option&lt;Tag&gt;, ErrorType&gt;</code> containing the tag of the generated
+literal value or an Error if there was a problem generating the literal.</p>
+<h5 id="errors-14"><a class="doc-anchor" href="#errors-14">§</a>Errors</h5>
+<ul>
+<li>Returns an ErrorType if generation of this literal failed.</li>
+</ul>
+<h5 id="examples-25"><a class="doc-anchor" href="#examples-25">§</a>Examples</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">//let a_node: ASTNode = /* Some ASTNode we want to generate a literal value from */
+//let result = self.generate_literal_ir(&amp;a_node);
+/* check if type_result was Ok or Err, if Ok extract the ValueTag from
+the Tag and use this for other functions. */</span></code></pre></div>
+</div></details></div></details></div><h2 id="synthetic-implementations" class="section-header">Auto Trait Implementations<a href="#synthetic-implementations" class="anchor">§</a></h2><div id="synthetic-implementations-list"><section id="impl-Freeze-for-IRGenerator" class="impl"><a href="#impl-Freeze-for-IRGenerator" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/marker/trait.Freeze.html" title="trait core::marker::Freeze">Freeze</a> for <a class="struct" href="struct.IRGenerator.html" title="struct ir::core::IRGenerator">IRGenerator</a></h3></section><section id="impl-RefUnwindSafe-for-IRGenerator" class="impl"><a href="#impl-RefUnwindSafe-for-IRGenerator" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/panic/unwind_safe/trait.RefUnwindSafe.html" title="trait core::panic::unwind_safe::RefUnwindSafe">RefUnwindSafe</a> for <a class="struct" href="struct.IRGenerator.html" title="struct ir::core::IRGenerator">IRGenerator</a></h3></section><section id="impl-Send-for-IRGenerator" class="impl"><a href="#impl-Send-for-IRGenerator" class="anchor">§</a><h3 class="code-header">impl !<a class="trait" href="https://doc.rust-lang.org/1.87.0/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> for <a class="struct" href="struct.IRGenerator.html" title="struct ir::core::IRGenerator">IRGenerator</a></h3></section><section id="impl-Sync-for-IRGenerator" class="impl"><a href="#impl-Sync-for-IRGenerator" class="anchor">§</a><h3 class="code-header">impl !<a class="trait" href="https://doc.rust-lang.org/1.87.0/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a> for <a class="struct" href="struct.IRGenerator.html" title="struct ir::core::IRGenerator">IRGenerator</a></h3></section><section id="impl-Unpin-for-IRGenerator" class="impl"><a href="#impl-Unpin-for-IRGenerator" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a> for <a class="struct" href="struct.IRGenerator.html" title="struct ir::core::IRGenerator">IRGenerator</a></h3></section><section id="impl-UnwindSafe-for-IRGenerator" class="impl"><a href="#impl-UnwindSafe-for-IRGenerator" class="anchor">§</a><h3 class="code-header">impl <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/panic/unwind_safe/trait.UnwindSafe.html" title="trait core::panic::unwind_safe::UnwindSafe">UnwindSafe</a> for <a class="struct" href="struct.IRGenerator.html" title="struct ir::core::IRGenerator">IRGenerator</a></h3></section></div><h2 id="blanket-implementations" class="section-header">Blanket Implementations<a href="#blanket-implementations" class="anchor">§</a></h2><div id="blanket-implementations-list"><details class="toggle implementors-toggle"><summary><section id="impl-Any-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/any.rs.html#138">Source</a><a href="#impl-Any-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/any/trait.Any.html" title="trait core::any::Any">Any</a> for T<div class="where">where
+    T: 'static + ?<a class="trait" href="https://doc.rust-lang.org/1.87.0/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,</div></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.type_id" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/any.rs.html#139">Source</a><a href="#method.type_id" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/1.87.0/core/any/trait.Any.html#tymethod.type_id" class="fn">type_id</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/1.87.0/core/any/struct.TypeId.html" title="struct core::any::TypeId">TypeId</a></h4></section></summary><div class='docblock'>Gets the <code>TypeId</code> of <code>self</code>. <a href="https://doc.rust-lang.org/1.87.0/core/any/trait.Any.html#tymethod.type_id">Read more</a></div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-Borrow%3CT%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/borrow.rs.html#209">Source</a><a href="#impl-Borrow%3CT%3E-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/borrow/trait.Borrow.html" title="trait core::borrow::Borrow">Borrow</a>&lt;T&gt; for T<div class="where">where
+    T: ?<a class="trait" href="https://doc.rust-lang.org/1.87.0/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,</div></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.borrow" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/borrow.rs.html#211">Source</a><a href="#method.borrow" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/1.87.0/core/borrow/trait.Borrow.html#tymethod.borrow" class="fn">borrow</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.87.0/std/primitive.reference.html">&amp;T</a></h4></section></summary><div class='docblock'>Immutably borrows from an owned value. <a href="https://doc.rust-lang.org/1.87.0/core/borrow/trait.Borrow.html#tymethod.borrow">Read more</a></div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-BorrowMut%3CT%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/borrow.rs.html#217">Source</a><a href="#impl-BorrowMut%3CT%3E-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/borrow/trait.BorrowMut.html" title="trait core::borrow::BorrowMut">BorrowMut</a>&lt;T&gt; for T<div class="where">where
+    T: ?<a class="trait" href="https://doc.rust-lang.org/1.87.0/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,</div></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.borrow_mut" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/borrow.rs.html#218">Source</a><a href="#method.borrow_mut" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/1.87.0/core/borrow/trait.BorrowMut.html#tymethod.borrow_mut" class="fn">borrow_mut</a>(&amp;mut self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.87.0/std/primitive.reference.html">&amp;mut T</a></h4></section></summary><div class='docblock'>Mutably borrows from an owned value. <a href="https://doc.rust-lang.org/1.87.0/core/borrow/trait.BorrowMut.html#tymethod.borrow_mut">Read more</a></div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-From%3CT%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/convert/mod.rs.html#767">Source</a><a href="#impl-From%3CT%3E-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;T&gt; for T</h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.from" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/convert/mod.rs.html#770">Source</a><a href="#method.from" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/1.87.0/core/convert/trait.From.html#tymethod.from" class="fn">from</a>(t: T) -&gt; T</h4></section></summary><div class="docblock"><p>Returns the argument unchanged.</p>
+</div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-Into%3CU%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/convert/mod.rs.html#750-752">Source</a><a href="#impl-Into%3CU%3E-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T, U&gt; <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;U&gt; for T<div class="where">where
+    U: <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;T&gt;,</div></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.into" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/convert/mod.rs.html#760">Source</a><a href="#method.into" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/1.87.0/core/convert/trait.Into.html#tymethod.into" class="fn">into</a>(self) -&gt; U</h4></section></summary><div class="docblock"><p>Calls <code>U::from(self)</code>.</p>
+<p>That is, this conversion is whatever the implementation of
+<code><a href="https://doc.rust-lang.org/1.87.0/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;T&gt; for U</code> chooses to do.</p>
+</div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-TryFrom%3CU%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/convert/mod.rs.html#806-808">Source</a><a href="#impl-TryFrom%3CU%3E-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T, U&gt; <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;U&gt; for T<div class="where">where
+    U: <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;T&gt;,</div></h3></section></summary><div class="impl-items"><details class="toggle" open><summary><section id="associatedtype.Error-1" class="associatedtype trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/convert/mod.rs.html#810">Source</a><a href="#associatedtype.Error-1" class="anchor">§</a><h4 class="code-header">type <a href="https://doc.rust-lang.org/1.87.0/core/convert/trait.TryFrom.html#associatedtype.Error" class="associatedtype">Error</a> = <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/convert/enum.Infallible.html" title="enum core::convert::Infallible">Infallible</a></h4></section></summary><div class='docblock'>The type returned in the event of a conversion error.</div></details><details class="toggle method-toggle" open><summary><section id="method.try_from" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/convert/mod.rs.html#813">Source</a><a href="#method.try_from" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/1.87.0/core/convert/trait.TryFrom.html#tymethod.try_from" class="fn">try_from</a>(value: U) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;T, &lt;T as <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;U&gt;&gt;::<a class="associatedtype" href="https://doc.rust-lang.org/1.87.0/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a>&gt;</h4></section></summary><div class='docblock'>Performs the conversion.</div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-TryInto%3CU%3E-for-T" class="impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/convert/mod.rs.html#791-793">Source</a><a href="#impl-TryInto%3CU%3E-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T, U&gt; <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/convert/trait.TryInto.html" title="trait core::convert::TryInto">TryInto</a>&lt;U&gt; for T<div class="where">where
+    U: <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;,</div></h3></section></summary><div class="impl-items"><details class="toggle" open><summary><section id="associatedtype.Error" class="associatedtype trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/convert/mod.rs.html#795">Source</a><a href="#associatedtype.Error" class="anchor">§</a><h4 class="code-header">type <a href="https://doc.rust-lang.org/1.87.0/core/convert/trait.TryInto.html#associatedtype.Error" class="associatedtype">Error</a> = &lt;U as <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;&gt;::<a class="associatedtype" href="https://doc.rust-lang.org/1.87.0/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a></h4></section></summary><div class='docblock'>The type returned in the event of a conversion error.</div></details><details class="toggle method-toggle" open><summary><section id="method.try_into" class="method trait-impl"><a class="src rightside" href="https://doc.rust-lang.org/1.87.0/src/core/convert/mod.rs.html#798">Source</a><a href="#method.try_into" class="anchor">§</a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/1.87.0/core/convert/trait.TryInto.html#tymethod.try_into" class="fn">try_into</a>(self) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.87.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;U, &lt;U as <a class="trait" href="https://doc.rust-lang.org/1.87.0/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;&gt;::<a class="associatedtype" href="https://doc.rust-lang.org/1.87.0/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a>&gt;</h4></section></summary><div class='docblock'>Performs the conversion.</div></details></div></details></div></section></div></main></body></html>

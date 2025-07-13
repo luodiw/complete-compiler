@@ -1,0 +1,1 @@
+searchState.loadedDescShard("logging", 0, "Provides centralized logging functionalities for the …\nProvides logging functionalities for the application.\nInitializes and returns a logger with both terminal and …\nLogs error messages using the provided logger.\nLogs informational messages using the provided logger.\nLogs warnings using the provided logger.")
