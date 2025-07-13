@@ -1,1 +1,0 @@
-searchState.loadedDescShard("safe_llvm", 0, "<code>SafeLLVM</code> aims to be a safe wrapper for the LLVM toolchain.")

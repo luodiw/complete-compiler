@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["LLVMGetBitcodeModule","LLVMGetBitcodeModule2","LLVMGetBitcodeModuleInContext","LLVMGetBitcodeModuleInContext2","LLVMParseBitcode","LLVMParseBitcode2","LLVMParseBitcodeInContext","LLVMParseBitcodeInContext2"]};

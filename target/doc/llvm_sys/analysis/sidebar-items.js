@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["LLVMVerifierFailureAction"],"fn":["LLVMVerifyFunction","LLVMVerifyModule","LLVMViewFunctionCFG","LLVMViewFunctionCFGOnly"]};

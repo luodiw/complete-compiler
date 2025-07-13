@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks","LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager","LLVMOrcRTDyldObjectLinkingLayerRegisterJITEventListener"],"type":["LLVMMemoryManagerCreateContextCallback","LLVMMemoryManagerNotifyTerminatingCallback"]};
